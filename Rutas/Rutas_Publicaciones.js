@@ -8,19 +8,14 @@ const UsModel = require("../schemas/Usuarios_Schema")
 // ****************** GET ******************
 
 
-// Mostar todos los usuarios
-router.get('/Timeline', async (req, res) => {
-    const Publicaciones = await PubModel.find({}, '-_id')
+// Mostar las publicaciones de un usuario
+router.get('/PubUs', async (req, res) => {
+    const Publicacion = await PubModel.find({Usuario: req.query.us}, 'Publicacion -_id' )
     res.status(302)
-    res.send(JSON.stringify(usuarios, null, 4))
+    res.send(JSON.stringify(Publicacion, null, 4))
 });
 
-// Mostrar usuario especifico
-router.get('/PubUs', async (req, res) => {
-    const usuarios = await PubModel.find({Usuario: req.query.us }, '-_id')
-    res.status(302)
-    res.send('usuario: '+ JSON.stringify(usuarios, null, 4))
-});
+
 
 
 
@@ -88,7 +83,5 @@ router.delete('/Usde', async (req, res) => {
     res.status(410)
     res.redirect("https://http.cat/410");
 });
-  
-
-
+    
 module.exports = router;
