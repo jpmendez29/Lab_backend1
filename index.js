@@ -23,8 +23,10 @@ mongoose.connect(
 // DECLARACION DE RUTA
 const routeUs = require('./Rutas/Rutas_Usuarios')
 const routePub = require('./Rutas/Rutas_Publicaciones')
+const routeSeg = require('./Rutas/Rutas_Seguimientos')
 app.use("/Usuarios", routeUs)
 app.use("/Publicaciones", routePub)
+app.use("/Seguimientos", routeSeg)
 
 // ABRIR PUERTO PARA APP
 app.listen(3000, (err) => {
