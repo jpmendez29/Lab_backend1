@@ -8,13 +8,16 @@ const a = "@"
 
 
 // Mostar todos los usuarios
+
 router.get('/Usall', async (req, res) => {
     const usuarios = await UsModel.find({}, '-_id')
     res.status(302)
     res.send(JSON.stringify(usuarios, null, 4))
 });
 
+
 // Mostrar usuario especifico
+
 router.get('/Usone', async (req, res) => {
     const usuarios = await UsModel.find({Usuario: a+req.query.us }, '-_id')
     res.status(302)
@@ -22,11 +25,11 @@ router.get('/Usone', async (req, res) => {
 });
 
 
-
 // ****************** POST ******************
 
 
 // Crear un usuario
+
 router.post('/UsCr', async (req, res)=> {
     const Usuario = new UsModel(
         {   Usuario: a+req.query.us,
@@ -41,11 +44,11 @@ router.post('/UsCr', async (req, res)=> {
 });
 
 
-
 // ****************** PATCH ******************
 
 
 // Actualizar el usuario (@) de un usuario especifico, por medio de su usuario (@)
+
 router.patch('/Usup', async (req, res)=> {
     const usuarios = await UsModel.findOneAndUpdate({Usuario: a+req.query.us },{Usuario: a+req.query.up})
     console.log("se actualizo el usuario")
@@ -54,8 +57,8 @@ router.patch('/Usup', async (req, res)=> {
 });
 
 
-
 // Actualizar el correo de un usuario especifico, por medio de su usuario (@)
+
 router.patch('/Usupem', async (req, res)=> {
     const usuarios = await UsModel.findOneAndUpdate({Usuario: a+req.query.us },{Correo: req.query.up})
     console.log("se actualizo el correo")
@@ -64,8 +67,8 @@ router.patch('/Usupem', async (req, res)=> {
 });
 
 
-
 // Actualizar la contraseña de un usuario especifico, por medio de su usuario (@)
+
 router.patch('/Usuppas', async (req, res)=> {
     const usuarios = await UsModel.findOneAndUpdate({Usuario: a+req.query.us },{Contraseña: req.query.up})
     console.log("se actualizo la contraseña")
@@ -75,11 +78,11 @@ router.patch('/Usuppas', async (req, res)=> {
 });
 
 
-
 // ****************** DELETE ******************
 
 
 // Borrar un usuario especifico
+
 router.delete('/Usde', async (req, res) => {
     const usuarios = await UsModel.findOneAndDelete({Usuario: a+req.query.us})
     console.log('el ususario fue borrado con exito')

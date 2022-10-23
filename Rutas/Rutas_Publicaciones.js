@@ -2,12 +2,15 @@ const express = require('express')
 const router = express.Router()
 const PubModel = require("../schemas/Publicaciones_Schema")
 const UsModel = require("../schemas/Usuarios_Schema")
+const SegModel = require("../schemas/Seguimiento_Schema")
 const a =  "@"
 
 
 // ****************** GET ******************
 
+
 // Mostar las publicaciones de un usuario
+
 router.get('/PubUs', async (req, res) => {
     const Publicacion = await PubModel.find({Usuario: a+req.query.us}, 'Titulo Publicacion -_id' )
     res.status(302)
@@ -15,11 +18,48 @@ router.get('/PubUs', async (req, res) => {
 });
 
 
+// Mostrar todas las publicaciones de todos los usuarios 
+
+router.get('/Usall', async (req, res) => {
+    const usuarios = await PubModel.find({}, 'Usuario -_id Titulo Publicacion')
+    res.status(302)
+    res.send(JSON.stringify(usuarios, null, 4))
+});
+
+
+// Mostrar el timeline de un usuario 
+
+router.get('/Timeline', async (req, res) => {
+    let publc = []
+    const time = await SegModel.aggregate([
+        {$lookup:{
+            from: "Publicaciones",
+            localField: "Usuario_seguido",
+            foreignField: "Usuario",
+            pipeline: [{$sort: {updatedAt:-1 }}, {$project: { _id: 0, id_Usuario: 0, createdAt:0}}],
+            as: "timeline"
+            }
+        },
+        { $match: {Usuario_seguidor : a+req.query.us} },
+    ])
+
+    time.forEach(b => {
+        b.timeline.forEach(ca => {
+            publc.push(ca)
+        })
+    });
+
+    publc.sort((p1, p2) => (p1.updatedAt < p2.updatedAt) ? 1 : (p1.updatedAt > p2.updatedAt) ? -1 : 0)
+    res.status(302)
+    res.send(JSON.stringify(publc, null, 4))
+});
+
 
 // ****************** POST ******************
 
 
-// Crear una publicacion
+// Crear una publicacion para un usuario especifico
+
 router.post('/NewPub', async (req, res)=> {
     const usuarios = await UsModel.findOne({Usuario: a+req.query.us})
     const Publicacion = new PubModel(
@@ -36,11 +76,11 @@ router.post('/NewPub', async (req, res)=> {
 });
 
 
-
 // ****************** PATCH ******************
 
 
 // Actualizar publicacion de un usuario especifico, por medio del titulo de la publicacion
+
 router.patch('/Pubup', async (req, res)=> {
     const Pubicacion = await PubModel.findOneAndUpdate({Usuario: a+req.query.us, Titulo: req.query.tit},{Publicacion: req.query.up})
     console.log("se actualizo la publicacion")
@@ -48,15 +88,18 @@ router.patch('/Pubup', async (req, res)=> {
     res.redirect("https://http.cat/202");
 });
 
+
 // ****************** DELETE ******************
 
 
 // Borrar una publicacion de un usuario especifico, por medio del titulo de la publicacion
+
 router.delete('/Pubde', async (req, res) => {
     const usuarios = await PubModel.findOneAndDelete({Usuario: a+req.query.us, Titulo: req.query.tit})
     console.log('la publicacion fue borrado con exito')
     res.status(410)
     res.redirect("https://http.cat/410");
 });
-    
+
+
 module.exports = router;

@@ -19,7 +19,7 @@ router.post('/create', async (req, res)=> {
     res.redirect("/notes");
     res.send('Got a POST request');
 });
-  
+
 router.put('/user', async (req, res)=> {
     res.send('Got a PUT request at /user');
 });
@@ -27,5 +27,5 @@ router.put('/user', async (req, res)=> {
 router.delete('/user', async (req, res) => {
     res.send('Got a DELETE request at /user');
 });
-  
+
 module.exports = router;
