@@ -6,6 +6,7 @@ const PublicacionesSchema = new mongoose.Schema(
   Usuario: {type: String, trim: true, required: true},
   Titulo : {type: String, trim: true, required: true},
   Publicacion: {type: String, trim: true, required: true},
+  Likes: {type: Number, required: false, default: 0},
   },
   {
     timestamps: true,

@@ -12,7 +12,7 @@ const a =  "@"
 // Mostar las publicaciones de un usuario
 
 router.get('/PubUs', async (req, res) => {
-    const Publicacion = await PubModel.find({Usuario: a+req.query.us}, 'Titulo Publicacion -_id' )
+    const Publicacion = await PubModel.find({Usuario: a+req.query.us}, 'Titulo Publicacion -_id Likes' )
     res.status(302)
     res.send(JSON.stringify(Publicacion, null, 4))
 });
@@ -20,8 +20,8 @@ router.get('/PubUs', async (req, res) => {
 
 // Mostrar todas las publicaciones de todos los usuarios 
 
-router.get('/Usall', async (req, res) => {
-    const usuarios = await PubModel.find({}, 'Usuario -_id Titulo Publicacion')
+router.get('/Puball', async (req, res) => {
+    const usuarios = await PubModel.find({}, 'Usuario -_id Titulo Publicacion Likes')
     res.status(302)
     res.send(JSON.stringify(usuarios, null, 4))
 });
