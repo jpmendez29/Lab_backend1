@@ -17,7 +17,7 @@ mongoose.connect(
 })
 .catch((e) => {
     console.log(e)
-    console.log("Jumbo")
+    console.log("Error de conexion")
 })
 
 // DECLARACION DE RUTA
@@ -33,7 +33,7 @@ app.use("/Likes", routeLikes)
 // ABRIR PUERTO PARA APP
 app.listen(3000, (err) => {
     if(err){
-        console.log("error", err)
+        console.log("Error", err)
         return
     }
     console.log("listening on port 3000")
