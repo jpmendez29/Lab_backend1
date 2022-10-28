@@ -11,7 +11,7 @@ const a = "@"
 
 // Ver publicaciones likeadas de un usuario 
 
-router.get('/Like', async (req, res) => {
+/*router.get('/Like', async (req, res) => {
     let publc = []
     const Likes = await LiModel.aggregate([
         {$lookup:{
@@ -33,6 +33,25 @@ router.get('/Like', async (req, res) => {
     
     res.status(302)
     res.send(JSON.stringify(publc, null, 4))
+});*/
+
+router.get('/Like', async (req, res) => {
+    const usuario = await UsModel.findOne({Usuario: a+req.query.us})
+    const time = await LiModel.aggregate([
+        {$lookup:{
+            from: "Publicaciones",
+            localField: "id_Publicacion",
+            foreignField: "_id",
+            pipeline: [{$project: { _id: 0, id_Usuario: 0, createdAt:0}}],
+            as: "Likes"
+            },  
+        },
+        { $match: {id_Usuario: usuario._id}},
+        { $unwind: "$timeline"}
+    ])
+    const aca = time.map(x => x.timeline).sort((p1, p2) => (p1.updatedAt < p2.updatedAt) ? 1 : (p1.updatedAt > p2.updatedAt) ? -1 : 0)
+    res.status(302)
+    res.send(JSON.stringify(aca, null, 4))
 });
 
 
@@ -64,7 +83,8 @@ router.post('/Clike', async (req, res)=> {
 // Eliminar un like de una publicacion
 
 router.delete('/Dlike', async (req, res) => {
-    const Likes = await LiModel.findOneAndDelete({Usuario: a+req.query.us , id_Publicacion: req.query.idp })
+    const usuario = await UsModel.findOne({Usuario: a+req.query.us })
+    const Likes = await LiModel.findOneAndDelete({id_Usuario: usuario._id , id_Publicacion: req.query.idp })
     const publicacion = await PubModel.findByIdAndUpdate(req.query.idp, { $inc: { Likes: -1 }})
     console.log("Like eliminado con exito")
     res.status(201)

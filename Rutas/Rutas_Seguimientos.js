@@ -9,16 +9,17 @@ const a =  "@"
 // mostrar todos los seguimientos, de todos los ususarios
 
 router.get('/Usall', async (req, res) => {
-    const usuarios = await SegModel.find({}, '-_id')
+    const seguimientos = await SegModel.find({}, '-_id')
     res.status(302)
-    res.send(JSON.stringify(usuarios, null, 4))
+    res.send(JSON.stringify(seguimientos, null, 4))
 });
 
 
 // Mostrar los seguidores de un usuario
 
 router.get('/Followers', async (req, res) => {
-    const Followers = await SegModel.find({Usuario_seguido: a+req.query.us}, 'Usuario_seguidor -_id' )
+    const usuario = await UsModel.findOne({Usuario: a+req.query.us})
+    const Followers = await SegModel.find({id_usuario_seguido: usuario._id}, 'Usuario_seguidor -_id' )
     res.status(302)
     res.send(JSON.stringify(Followers, null, 4))
 });
@@ -27,7 +28,8 @@ router.get('/Followers', async (req, res) => {
 // Mostrar a quien sigue un usuario
 
 router.get('/Following', async (req, res) => {
-    const Following = await SegModel.find({Usuario_seguidor: a+req.query.us}, 'Usuario_seguido -_id' )
+    const usuario = await UsModel.findOne({Usuario: a+req.query.us})
+    const Following = await SegModel.find({id_usuario_seguidor: usuario._id}, 'Usuario_seguido -_id' )
     res.status(302)
     res.send(JSON.stringify(Following, null, 4))
 });
@@ -63,7 +65,9 @@ router.post('/Follow', async (req, res)=> {
 
 // Dejar de seguir a un usuario
 router.delete('/Delfollow', async (req, res) => {
-    const Vinculo = await SegModel.findOneAndDelete({Usuario_seguidor: a+req.query.us, Usuario_seguido: a+req.query.usf})
+    const usuario_seguidor = await UsModel.findOne({Usuario: a+req.query.us})
+    const usuario_seguido = await UsModel.findOne({Usuario: a+req.query.usf})
+    const Vinculo = await SegModel.findOneAndDelete({id_usuario_seguidor: usuario_seguidor._id, id_usuario_seguido: usuario_seguido._id})
     console.log('Vinculo borrado con exito')
     res.status(410)
     res.redirect("https://http.cat/410");

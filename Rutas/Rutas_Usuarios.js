@@ -19,9 +19,9 @@ router.get('/Usall', async (req, res) => {
 // Mostrar usuario especifico
 
 router.get('/Usone', async (req, res) => {
-    const usuarios = await UsModel.find({Usuario: a+req.query.us }, '-_id')
+    const usuario = await UsModel.findOne({Usuario: a+req.query.us }, '-_id')
     res.status(302)
-    res.send('usuario: '+ JSON.stringify(usuarios, null, 4))
+    res.send(JSON.stringify(usuario, null, 4))
 });
 
 
