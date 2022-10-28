@@ -11,7 +11,7 @@ const a = "@"
 
 router.get('/Usall', async (req, res) => {
     const usuarios = await UsModel.find({}, '-_id')
-    res.status(302)
+    res.status(202)
     res.send(JSON.stringify(usuarios, null, 4))
 });
 
@@ -19,9 +19,17 @@ router.get('/Usall', async (req, res) => {
 // Mostrar usuario especifico
 
 router.get('/Usone', async (req, res) => {
-    const usuario = await UsModel.findOne({Usuario: a+req.query.us }, '-_id')
-    res.status(302)
-    res.send(JSON.stringify(usuario, null, 4))
+    try {
+        const usuario = await UsModel.findOne({Usuario: a+req.query.us }, '-_id')
+        if(!usuario) {
+            throw error
+        }
+        res.status(302)
+        res.send(JSON.stringify(usuario, null, 4))
+    } catch (error) {
+        res.status(404)
+        return error
+    }
 });
 
 
